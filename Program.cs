@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using RegistroJugadores;
+using RegistroJugadores.DAL;
+using RegistroJugadores.Services;
 using RegistroJugadores.Components;
 
 var builder = WebApplication.CreateBuilder(args);
