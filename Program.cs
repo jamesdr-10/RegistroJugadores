@@ -14,6 +14,9 @@ var ConStr = builder.Configuration.GetConnectionString("SqlConStr");
 //Agregamos el contexto al builder con el ConStr
 builder.Services.AddDbContextFactory<Contexto>(o => o.UseSqlServer(ConStr));
 
+//Inyección del service
+builder.Services.AddScoped<JugadoresService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
