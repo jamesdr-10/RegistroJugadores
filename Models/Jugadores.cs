@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RegistroJugadores;
+namespace RegistroJugadores.Models;
 
 public class Jugadores
 {
