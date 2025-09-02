@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using RegistroJugadores.DAL;
+using RegistroJugadores.Models;
 
-namespace RegistroJugadores;
+namespace RegistroJugadores.Services;
 
 public class JugadoresService(IDbContextFactory<Contexto> DbFactory)
 {
