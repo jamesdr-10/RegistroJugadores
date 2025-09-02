@@ -34,7 +34,7 @@ public class JugadoresService(IDbContextFactory<Contexto> DbFactory)
         }
     }
 
-    public async Task<Jugadores> Buscar(int jugadorId)
+    public async Task<Jugadores?> Buscar(int jugadorId)
     {
         await using var contexto = await DbFactory.CreateDbContextAsync();
         return await contexto.Jugadores.FirstOrDefaultAsync(j => j.JugadorId == jugadorId);
