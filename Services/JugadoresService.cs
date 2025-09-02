@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace RegistroJugadores;
 
@@ -43,6 +44,12 @@ public class JugadoresService(IDbContextFactory<Contexto> DbFactory)
     {
         await using var contexto = await DbFactory.CreateDbContextAsync();
         return await contexto.Jugadores.AsNoTracking().Where(j => j.JugadorId == jugadorId).ExecuteDeleteAsync() > 0;
+    }
+
+    public async Task<List<Jugadores>> Listar(Expression<Func<Jugadores, bool>> criterio)
+    {
+        await using var contexto = await DbFactory.CreateDbContextAsync();
+        return await contexto.Jugadores.Where(criterio).AsNoTracking().ToListAsync();
     }
 
 }
