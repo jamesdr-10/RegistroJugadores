@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RegistroJugadores.Models;
 
-namespace RegistroJugadores;
+namespace RegistroJugadores.DAL;
 
 public class Contexto : DbContext
 {
