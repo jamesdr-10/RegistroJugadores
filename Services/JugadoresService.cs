@@ -23,7 +23,7 @@ public class JugadoresService(IDbContextFactory<Contexto> DbFactory)
         contexto.Update(jugador);
         return await contexto.SaveChangesAsync() > 0;
     }
-    private async Task<bool> Guardar(Jugadores jugador)
+    public async Task<bool> Guardar(Jugadores jugador)
     {
         if (!await Existe(jugador.JugadorId))
         {
