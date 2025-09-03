@@ -56,6 +56,18 @@
                     <th>Eliminar</th>
                 </tr>
             </thead>
+            <tbody>
+                @foreach (var jugador in ListaJugadores)
+                {
+                    <tr>
+                        <td> @jugador.JugadorId</td>
+                        <td> @jugador.Nombre</td>
+                        <td> @jugador.PartidasJugadas</td>
+
+
+                    </tr>
+                }
+            </tbody>
         </table>
 
     </div>
