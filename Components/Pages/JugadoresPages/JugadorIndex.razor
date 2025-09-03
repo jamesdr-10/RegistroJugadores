@@ -36,6 +36,13 @@
                     <option value="Partidas">Partidas</option>
                 </InputSelect>
             </div>
+
+            <div class="col-4">
+                <div class="input-group">
+                    <input class="form-control" @bind="ValorFiltro" placeholder="Buscar" />
+                    
+                </div>
+            </div>
             
         </div>
 
@@ -64,6 +71,27 @@
     protected override async Task OnInitializedAsync()
     {
         ListaJugadores = await jugadoresService.Listar(j => j.JugadorId > 0);
-    }   
+    }
 
+    private async Task Buscar()
+    {
+        if (ValorFiltro.Trim() != "")
+        {
+            if (Filtro == "JugadorId")
+            {
+                ListaJugadores = await jugadoresService.Listar(j => j.JugadorId.Equals(ValorFiltro));
+            }
+            else if (Filtro == "Nombres")
+            {
+                ListaJugadores = await jugadoresService.Listar(j => j.Nombre.Contains(ValorFiltro));
+            }
+            else if (Filtro == "Partidas") 
+            {
+                ListaJugadores = await jugadoresService.Listar(j => j.PartidasJugadas.Equals(ValorFiltro));
+            }
+        } else
+        {
+            ListaJugadores = await jugadoresService.Listar(j => j.JugadorId > 0);
+        }
+    }
 }
