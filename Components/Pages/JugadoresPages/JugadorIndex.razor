@@ -49,9 +49,9 @@
         <table class="table table-hover">
             <thead class="table table-striped text-black">
                 <tr>
-                    <th>Jugador ID</th>
-                    <th>Nombre</th>
-                    <th>Partidas Jugadas</th>
+                    <th>JugadorId</th>
+                    <th>Nombres</th>
+                    <th>Partidas</th>
                     <th>Editar</th>
                     <th>Eliminar</th>
                 </tr>
@@ -61,8 +61,8 @@
                 {
                     <tr>
                         <td> @jugador.JugadorId</td>
-                        <td> @jugador.Nombre</td>
-                        <td> @jugador.PartidasJugadas</td>
+                        <td> @jugador.Nombres</td>
+                        <td> @jugador.Partidas</td>
 
 
                     </tr>
@@ -95,11 +95,11 @@
             }
             else if (Filtro == "Nombres")
             {
-                ListaJugadores = await jugadoresService.Listar(j => j.Nombre.Contains(ValorFiltro));
+                ListaJugadores = await jugadoresService.Listar(j => j.Nombres.Contains(ValorFiltro));
             }
             else if (Filtro == "Partidas") 
             {
-                ListaJugadores = await jugadoresService.Listar(j => j.PartidasJugadas.Equals(ValorFiltro));
+                ListaJugadores = await jugadoresService.Listar(j => j.Partidas.Equals(ValorFiltro));
             }
         } else
         {
