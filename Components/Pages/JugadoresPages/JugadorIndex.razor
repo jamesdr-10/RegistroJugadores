@@ -44,5 +44,14 @@
 </div>
 
 @code {
+    public List<Jugadores> ListaJugadores { get; set; } = new List<Jugadores>();
+
+    public string Filtro { get; set; } = string.Empty;
+    public string ValorFiltro { get; set } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaJugadores = await jugadoresService.Listar(j => j.JugadorId > 0);
+    }   
 
 }
