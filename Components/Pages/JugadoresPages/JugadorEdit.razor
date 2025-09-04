@@ -4,14 +4,14 @@
 @inject NavigationManager navigationManager;
 @rendermode InteractiveServer
 
-<PageTitle>Modificar Jugador</PageTitle>
+<PageTitle>Editar Jugador</PageTitle>
 <EditForm Model="Jugador" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
 
     <div class="container">
 
         <div class="card-header text-center">
-            <h5 class="card-title">Modificar Jugador</h5>
+            <h5 class="card-title">Editar Jugador</h5>
         </div>
 
         <div class="card-body">
@@ -55,6 +55,14 @@
 
     public Jugadores Jugador { get; set; } = new Jugadores();
     private string errorMensaje = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (JugadorId > 0)
+        {
+            Jugador = await jugadoresService.Buscar(JugadorId) ?? new Jugadores();
+        }
+    }
 
     public async Task Guardar()
     {
