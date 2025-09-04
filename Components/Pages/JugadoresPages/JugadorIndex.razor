@@ -41,7 +41,7 @@
             <div class="col-4">
                 <div class="input-group">
                     <input class="form-control" @bind="ValorFiltro" placeholder="Buscar" />
-                    <button type="button" class="btn btn-primary bi bi-search" @onclick="Buscar"></button>
+                    <button type="button" class="btn btn-primary bi bi-search" @onclick="Buscar"> Buscar</button>
                 </div>
             </div>
             
@@ -65,14 +65,14 @@
                         <td> @jugador.Nombres</td>
                         <td> @jugador.Partidas</td>
                         <td>
-                            <a href="/Jugador/Edit/@jugador.JugadorId" class="btn btn-warning btn-sm">
-                                <span class="bi bi-pencil-square"></span> Editar
+                            <a href="/Jugador/Edit/@jugador.JugadorId" class="btn btn-warning">
+                                <span class="bi bi-pencil-square"></span>
                             </a> 
                         </td>
 
                         <td>
-                            <button class="btn btn-danger btn-sm" @onclick="() => Eliminar(jugador.JugadorId)">
-                                <span class="bi bi-trash"></span> Eliminar
+                            <button class="btn btn-danger" @onclick="() => Eliminar(jugador.JugadorId)">
+                                <span class="bi bi-trash"></span> 
                             </button>
                         </td>
                     </tr>
