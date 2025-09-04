@@ -1,0 +1,15 @@
+﻿@page "/Jugador/Edit/{JugadorId:int}"
+
+@inject JugadoresService jugadoresService;
+@inject NavigationManager navigationManager;
+@rendermode InteractiveServer
+
+
+
+
+@code {
+
+    [Parameter]
+    public int JugadorId { get; set; }
+
+}
