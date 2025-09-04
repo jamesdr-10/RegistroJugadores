@@ -7,9 +7,9 @@ public class Jugadores
     [Key]
     public int JugadorId { get; set; }
 
-    [Required(ErrorMessage = "El nombre no puede estar vacío")]
+    [Required(ErrorMessage = "El nombre no puede estar vacío.")]
     public string Nombres { get; set; } = null!;
 
-    [Range(0, int.MaxValue, ErrorMessage = "La cantidad de partidas jugadas debe ser mayor o igual que cero")]
+    [Range(0, int.MaxValue, ErrorMessage = "La cantidad de partidas jugadas debe ser mayor o igual que cero.")]
     public int Partidas { get; set; }
 }
