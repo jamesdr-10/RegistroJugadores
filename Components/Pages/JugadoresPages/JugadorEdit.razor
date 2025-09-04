@@ -4,12 +4,29 @@
 @inject NavigationManager navigationManager;
 @rendermode InteractiveServer
 
+<PageTitle>Modificar Jugador</PageTitle>
+<EditForm Model="Jugador" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
 
+</EditForm>
 
 
 @code {
 
     [Parameter]
     public int JugadorId { get; set; }
+
+    public Jugadores Jugador { get; set; } = new Jugadores();
+
+    public async Task Guardar()
+    {
+        if (await jugadoresService.Guardar(Jugador))
+        {
+            navigationManager.NavigateTo("/Jugador/Index");
+        } else
+        {
+            
+        }
+    }
 
 }
