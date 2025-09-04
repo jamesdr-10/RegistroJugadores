@@ -33,6 +33,11 @@
             <ValidationMessage For="(() => Jugador.Partidas)" />
         </div>
 
+            @if (!string.IsNullOrEmpty(errorMensaje))
+            {
+                <div class="alert alert-danger">@errorMensaje</div>
+            }
+
         </div>
 
         <div class="card-footer text-center">
@@ -49,6 +54,7 @@
     public int JugadorId { get; set; }
 
     public Jugadores Jugador { get; set; } = new Jugadores();
+    private string errorMensaje = null!;
 
     public async Task Guardar()
     {
@@ -57,7 +63,7 @@
             navigationManager.NavigateTo("/Jugador/Index");
         } else
         {
-            
+            errorMensaje = "⚠️ Ya existe un usuario con este nombre.";
         }
     }
 
