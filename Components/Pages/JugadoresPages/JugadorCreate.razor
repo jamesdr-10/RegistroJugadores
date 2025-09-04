@@ -28,4 +28,15 @@
 @code {
     public Jugadores Jugador { get; set; } = new Jugadores();
 
+    public async Task Guardar()
+    {
+        if (await jugadoresService.Guardar(Jugador))
+        {
+            navigationManager.NavigateTo("/Jugador/Index");
+        }
+        else
+        {
+            
+}
+    }
 }
