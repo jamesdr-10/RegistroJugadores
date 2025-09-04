@@ -21,7 +21,18 @@
             <InputNumber class="form-control" @bind-Value="Jugador.JugadorId" readonly></InputNumber>
         </div>
 
+            <div class="mb-3">
+                <label class="form-label"><strong>Nombres</strong></label>
+                <InputText class="form-control" @bind-Value="Jugador.Nombres"></InputText>
+                <ValidationMessage For="(() => Jugador.Nombres)" />
+            </div>
 
+            <div class="mb-3">
+                <label class="form-label"><strong>Partidas</strong></label>
+                <InputNumber class="form-control" @bind-Value="Jugador.Partidas"></InputNumber>
+                <ValidationMessage For="(() => Jugador.Partidas)" />
+            </div>
+        </div>
 
     </div>
 
