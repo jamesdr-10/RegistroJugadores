@@ -33,20 +33,23 @@ public class JugadoresService(IDbContextFactory<Contexto> DbFactory)
     }
     public async Task<bool> Guardar(Jugadores jugador)
     {
-        if (!await Existe(jugador.JugadorId) && !await ExisteNombre(jugador.Nombres))
+        if (!await Existe(jugador.JugadorId))
         {
-            if (!await Existe(jugador.JugadorId) && await ExisteNombre(jugador.Nombres))
+            if (await ExisteNombre(jugador.Nombres))
             {
                 return false;
             }
             return await Insertar(jugador);
-        } else
+        }
+        else
         {
-            if (await Existe(jugador.JugadorId) && !await ExisteNombre(jugador.Nombres))
+            var jugadorExistente = await Buscar(jugador.JugadorId);
+
+            if (await ExisteNombre(jugador.Nombres) && jugadorExistente!.Nombres != jugador.Nombres)
             {
-                return await Modificar(jugador);
+                return false;
             }
-            return false;
+            return await Modificar(jugador);
         }
     }
 
