@@ -89,9 +89,9 @@
     {
         if (ValorFiltro.Trim() != "")
         {
-            if (Filtro == "JugadorId")
+            if (Filtro == "JugadorId" && int.TryParse(ValorFiltro, out var id))
             {
-                ListaJugadores = await jugadoresService.Listar(j => j.JugadorId.Equals(ValorFiltro));
+                ListaJugadores = await jugadoresService.Listar(j => j.JugadorId == id);
             }
             else if (Filtro == "Nombres")
             {
@@ -99,7 +99,7 @@
             }
             else if (Filtro == "Partidas" && int.TryParse(ValorFiltro, out var partidas)) 
             {
-                ListaJugadores = await jugadoresService.Listar(j => j.Partidas.Equals(ValorFiltro));
+                ListaJugadores = await jugadoresService.Listar(j => j.Partidas == partidas);
             }
         } else
         {
