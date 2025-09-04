@@ -34,6 +34,11 @@
             </div>
         </div>
 
+        @if (!string.IsNullOrEmpty(errorMensaje))
+        {
+            <div class="alert alert-danger">@errorMensaje</div>
+        }
+
         <div class="card-footer text-center">
             <a href="/Jugador/Index" class="btn btn-secondary"><span class="bi bi-arrow-left"></span> Volver</a>
             <button type="submit" class="btn btn-primary bi bi-floppy"> Guardar</button>
@@ -43,6 +48,7 @@
 
 @code {
     public Jugadores Jugador { get; set; } = new Jugadores();
+    private string errorMensaje = null!;
 
     public async Task Guardar()
     {
@@ -52,7 +58,7 @@
         }
         else
         {
-            
+            errorMensaje = "⚠️ Ya existe un jugador con este nombre.";
         }
     }
 }
