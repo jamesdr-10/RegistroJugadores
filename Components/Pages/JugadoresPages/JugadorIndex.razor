@@ -97,7 +97,7 @@
             {
                 ListaJugadores = await jugadoresService.Listar(j => j.Nombres.Contains(ValorFiltro));
             }
-            else if (Filtro == "Partidas") 
+            else if (Filtro == "Partidas" && int.TryParse(ValorFiltro, out var partidas)) 
             {
                 ListaJugadores = await jugadoresService.Listar(j => j.Partidas.Equals(ValorFiltro));
             }
