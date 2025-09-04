@@ -8,18 +8,18 @@
 <EditForm Model="Jugador" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
 
-<div class="container">
+    <div class="container">
 
-    <div class="card-header text-center">
-        <h5 class="card-title">Crear Jugador</h5>
-    </div>
-
-    <div class="card-body">
-
-        <div class="mb-3">
-            <label class="form-label"><strong>JugadorId</strong></label>
-            <InputNumber class="form-control" @bind-Value="Jugador.JugadorId" readonly></InputNumber>
+        <div class="card-header text-center">
+            <h5 class="card-title">Crear Jugador</h5>
         </div>
+
+        <div class="card-body">
+
+            <div class="mb-3">
+                <label class="form-label"><strong>JugadorId</strong></label>
+                <InputNumber class="form-control" @bind-Value="Jugador.JugadorId" readonly></InputNumber>
+            </div>
 
             <div class="mb-3">
                 <label class="form-label"><strong>Nombres</strong></label>
@@ -34,10 +34,11 @@
             </div>
         </div>
 
+        <div class="card-footer text-center">
+            <a href="/Jugador/Index" class="btn btn-secondary"><span class="bi bi-arrow-left"></span> Volver</a>
+            <button type="submit" class="btn btn-primary bi bi-floppy"> Guardar</button>
+        </div>
     </div>
-
-
-</div>
 </EditForm>
 
 @code {
@@ -52,6 +53,6 @@
         else
         {
             
-}
+        }
     }
 }
