@@ -13,6 +13,12 @@ public class JugadoresService(IDbContextFactory<Contexto> DbFactory)
         return await contexto.Jugadores.AnyAsync(j => j.JugadorId == jugadorId);
     }
 
+    private async Task<bool> ExisteNombre(string nombres)
+    {
+        await using var contexto = await DbFactory.CreateDbContextAsync();
+        return await contexto.Jugadores.AnyAsync(j => j.Nombres.ToLower().Trim().Equals(nombres.ToLower().Trim()));
+    }
+
     private async Task<bool> Insertar(Jugadores jugador)
     {
         await using var contexto = await DbFactory.CreateDbContextAsync();
@@ -27,12 +33,20 @@ public class JugadoresService(IDbContextFactory<Contexto> DbFactory)
     }
     public async Task<bool> Guardar(Jugadores jugador)
     {
-        if (!await Existe(jugador.JugadorId))
+        if (!await Existe(jugador.JugadorId) && !await ExisteNombre(jugador.Nombres))
         {
+            if (!await Existe(jugador.JugadorId) && await ExisteNombre(jugador.Nombres))
+            {
+                return false;
+            }
             return await Insertar(jugador);
         } else
         {
-            return await Modificar(jugador);
+            if (await Existe(jugador.JugadorId) && !await ExisteNombre(jugador.Nombres))
+            {
+                return await Modificar(jugador);
+            }
+            return false;
         }
     }
 
