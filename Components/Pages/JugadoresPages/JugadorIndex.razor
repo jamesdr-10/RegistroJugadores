@@ -106,4 +106,13 @@
             ListaJugadores = await jugadoresService.Listar(j => j.JugadorId > 0);
         }
     }
+
+    private async Task Eliminar(int jugadorId)
+    {
+        var eliminar = await jugadoresService.Eliminar(jugadorId);
+        if (eliminar)
+        {
+            ListaJugadores = await jugadoresService.Listar(j => j.JugadorId > 0);
+        }
+    }
 }
