@@ -75,7 +75,7 @@
                         </td>
 
                         <td>
-                            <button class="btn btn-danger" @onclick="() => Eliminar(jugador.JugadorId)">
+                            <button class="btn btn-danger" @onclick="() => MostrarConfirmacion(jugador)">
                                 <span class="bi bi-trash"></span> 
                             </button>
                         </td>
@@ -83,6 +83,39 @@
                 }
             </tbody>
         </table>
+
+        @if (MostrarModal)
+        {
+            <div class="modal-backdrop fade show"></div>
+            <div class="modal show d-block">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+
+                        <div class="modal-header bg-primary text-white text-center">
+                            <h5 class="modal-title w-100">Eliminar Jugador</h5>
+                        </div>
+
+                        <div class="modal-body">
+                            <p class="text-danger text-center">¿Estás seguro de que deseas eliminar al Jugador?</p>
+                            <div class="card border-0">
+                                <div class="card-body">
+                                    <h6 class="card-title text-center">Datos del Jugador</h6>
+                                    <hr />
+                                    <p><strong>JugadorId:</strong> @JugadorAEliminar?.JugadorId</p>
+                                    <p><strong>Nombres:</strong> @JugadorAEliminar?.Nombres</p>
+                                    <p><strong>Partidas:</strong> @JugadorAEliminar?.Partidas</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer justify-content-center">
+                            <button type="button" class="btn btn-danger" @onclick="Eliminar">Eliminar</button>
+                            <button type="button" class="btn btn-secondary" @onclick="CerrarModal">Volver</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
 
     </div>
 
@@ -93,6 +126,9 @@
 
     public string Filtro { get; set; } = string.Empty;
     public string ValorFiltro { get; set; } = string.Empty;
+
+    private Jugadores? JugadorAEliminar;
+    private bool MostrarModal = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -121,12 +157,25 @@
         }
     }
 
-    private async Task Eliminar(int jugadorId)
+    private async Task Eliminar()
     {
-        var eliminar = await jugadoresService.Eliminar(jugadorId);
+        var eliminar = await jugadoresService.Eliminar(JugadorAEliminar!.JugadorId);
         if (eliminar)
         {
             ListaJugadores = await jugadoresService.Listar(j => j.JugadorId > 0);
         }
+        CerrarModal();
+    }
+
+    private void MostrarConfirmacion(Jugadores jugador)
+    {
+        JugadorAEliminar = jugador;
+        MostrarModal = true;
+    }
+
+    private void CerrarModal()
+    {
+        JugadorAEliminar = null;
+        MostrarModal = false;
     }
 }
