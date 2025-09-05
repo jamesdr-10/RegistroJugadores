@@ -46,6 +46,7 @@
                 <div class="input-group">
                     <input class="form-control" @bind="ValorFiltro" placeholder="Buscar" />
                     <button type="button" class="btn btn-primary bi bi-search" @onclick="Buscar"> Buscar</button>
+                    <button type="button" class="btn btn-secondary ms-1" @onclick="Restablecer"><i class="bi bi-arrow-clockwise"></i></button>
                 </div>
             </div>
             
@@ -177,5 +178,12 @@
     {
         JugadorAEliminar = null;
         MostrarModal = false;
+    }
+
+    private async Task Restablecer()
+    {
+        ListaJugadores = await jugadoresService.Listar(j => j.JugadorId > 0);
+        Filtro = string.Empty;
+        ValorFiltro = string.Empty;
     }
 }
