@@ -10,113 +10,114 @@
         <div class="card-header text-center">
             <h5 class="card-title">Registro de Jugadores</h5>
         </div>
-    </div>
 
-    <div class="card-body">
+        <div class="card-body">
 
-        <div class="row">
+            <div class="row">
 
-            <div class="col-3">
-                <label class="col-form-label"><strong>Filtrar por</strong></label>
-            </div>
+                <div class="col-3">
+                    <label class="col-form-label"><strong>Filtrar por</strong></label>
+                </div>
 
-            <div class="col-4">
-                <label class="col-form-label"><strong>Búsqueda</strong></label>
-            </div>
+                <div class="col-4">
+                    <label class="col-form-label"><strong>Búsqueda</strong></label>
+                </div>
 
-            <div class="col-5 d-flex justify-content-end">
-                <a href="/Jugador/Create" class="btn btn-success"> <span class="bi bi-plus-square mt-3"></span> Crear</a>
-            </div>
-
-        </div>
-
-        <div class="row align-items-center">
-
-            <div class="col-3">
-                <InputSelect class="form-select" @bind-Value="Filtro">
-                    <option value="" selected disabled>Elija una opción</option>
-                    <option value="JugadorId">JugadorId</option>
-                    <option value="Nombres">Nombres</option>
-                    <option value="Partidas">Partidas</option>
-                </InputSelect>
-            </div>
-
-            <div class="col-4">
-                <div class="input-group">
-                    <input class="form-control" @bind="ValorFiltro" placeholder="Buscar" />
-                    <button type="button" class="btn btn-primary bi bi-search" @onclick="Buscar"> Buscar</button>
-                    <button type="button" class="btn btn-secondary ms-1" @onclick="Restablecer"><i class="bi bi-arrow-clockwise"></i></button>
+                <div class="col-5 d-flex justify-content-end">
+                    <a href="/Jugador/Create" class="btn btn-success"> <span class="bi bi-plus-square mt-3"></span> Crear</a>
                 </div>
             </div>
-            
-        </div>
 
-        <table class="table table-hover">
-            <thead class="table table-striped text-black">
-                <tr>
-                    <th>JugadorId</th>
-                    <th>Nombres</th>
-                    <th>Partidas</th>
-                    <th>Editar</th>
-                    <th>Eliminar</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var jugador in ListaJugadores)
-                {
-                    <tr>
-                        <td> @jugador.JugadorId</td>
-                        <td> @jugador.Nombres</td>
-                        <td> @jugador.Partidas</td>
+            <div class="row align-items-center">
 
-                        <td>
-                            <a href="/Jugador/Edit/@jugador.JugadorId" class="btn btn-warning">
-                                <span class="bi bi-pencil-square"></span>
-                            </a> 
-                        </td>
+                <div class="col-3">
+                    <InputSelect class="form-select" @bind-Value="Filtro">
+                        <option value="" selected disabled>Elija una opción</option>
+                        <option value="JugadorId">JugadorId</option>
+                        <option value="Nombres">Nombres</option>
+                        <option value="Partidas">Partidas</option>
+                    </InputSelect>
+                </div>
 
-                        <td>
-                            <button class="btn btn-danger" @onclick="() => MostrarConfirmacion(jugador)">
-                                <span class="bi bi-trash"></span> 
-                            </button>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-
-        @if (MostrarModal)
-        {
-            <div class="modal-backdrop fade show"></div>
-            <div class="modal show d-block">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-
-                        <div class="modal-header bg-primary text-white text-center">
-                            <h5 class="modal-title w-100">Eliminar Jugador</h5>
-                        </div>
-
-                        <div class="modal-body">
-                            <p class="text-danger text-center">¿Estás seguro de que deseas eliminar al Jugador?</p>
-                            <div class="card border-0">
-                                <div class="card-body">
-                                    <h6 class="card-title text-center">Datos del Jugador</h6>
-                                    <hr />
-                                    <p><strong>JugadorId:</strong> @JugadorAEliminar?.JugadorId</p>
-                                    <p><strong>Nombres:</strong> @JugadorAEliminar?.Nombres</p>
-                                    <p><strong>Partidas:</strong> @JugadorAEliminar?.Partidas</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="modal-footer justify-content-center">
-                            <button type="button" class="btn btn-danger" @onclick="Eliminar">Eliminar</button>
-                            <button type="button" class="btn btn-secondary" @onclick="CerrarModal">Volver</button>
-                        </div>
+                <div class="col-4">
+                    <div class="input-group">
+                        <input class="form-control" @bind="ValorFiltro" placeholder="Buscar" />
+                        <button type="button" class="btn btn-primary bi bi-search" @onclick="Buscar"> Buscar</button>
+                        <button type="button" class="btn btn-secondary ms-1" @onclick="Restablecer"><i class="bi bi-arrow-clockwise"></i></button>
                     </div>
                 </div>
             </div>
-        }
+
+            <table class="table table-hover">
+                <thead class="table table-striped text-black">
+                    <tr>
+                        <th>JugadorId</th>
+                        <th>Nombres</th>
+                        <th>Partidas</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var jugador in ListaJugadores)
+                    {
+                        <tr>
+                            <td> @jugador.JugadorId</td>
+                            <td> @jugador.Nombres</td>
+                            <td> @jugador.Partidas</td>
+
+                            <td>
+                                <a href="/Jugador/Edit/@jugador.JugadorId" class="btn btn-warning">
+                                    <span class="bi bi-pencil-square"></span>
+                                </a>
+                            </td>
+
+                            <td>
+                                <button class="btn btn-danger" @onclick="() => MostrarConfirmacion(jugador)">
+                                    <span class="bi bi-trash"></span>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            @if (MostrarModal)
+            {
+                <div class="modal-backdrop fade show"></div>
+                <div class="modal show d-block">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+
+                            <div class="modal-header bg-primary text-white text-center">
+                                <h5 class="modal-title w-100">Eliminar Jugador</h5>
+                            </div>
+
+                            <div class="modal-body">
+                                <p class="text-danger text-center">¿Estás seguro de que deseas eliminar al Jugador?</p>
+                                <div class="card border-0">
+                                    <div class="card-body">
+                                        <h6 class="card-title text-center">Datos del Jugador</h6>
+                                        <hr />
+                                        <p><strong>JugadorId:</strong> @JugadorAEliminar?.JugadorId</p>
+                                        <p><strong>Nombres:</strong> @JugadorAEliminar?.Nombres</p>
+                                        <p><strong>Partidas:</strong> @JugadorAEliminar?.Partidas</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer justify-content-center">
+                                <button type="button" class="btn btn-danger" @onclick="Eliminar">Eliminar</button>
+                                <button type="button" class="btn btn-secondary" @onclick="CerrarModal">Volver</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="card-footer space-between">
+            <label>Cantidad:  @ListaJugadores.Count()</label>
+        </div>
     </div>
 </div>
 
