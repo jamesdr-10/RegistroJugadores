@@ -25,12 +25,14 @@ public class JugadoresService(IDbContextFactory<Contexto> DbFactory)
         contexto.Jugadores.Add(jugador);
         return await contexto.SaveChangesAsync() > 0;
     }
+
     private async Task<bool> Modificar(Jugadores jugador)
     {
         await using var contexto = await DbFactory.CreateDbContextAsync();
         contexto.Update(jugador);
         return await contexto.SaveChangesAsync() > 0;
     }
+
     public async Task<bool> Guardar(Jugadores jugador)
     {
         if (!await Existe(jugador.JugadorId))
@@ -70,5 +72,4 @@ public class JugadoresService(IDbContextFactory<Contexto> DbFactory)
         await using var contexto = await DbFactory.CreateDbContextAsync();
         return await contexto.Jugadores.Where(criterio).AsNoTracking().ToListAsync();
     }
-
 }

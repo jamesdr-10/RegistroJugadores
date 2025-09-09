@@ -10,10 +10,10 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 //Obtenemos el ConStr para usarlo en el contexto
-var ConStr = builder.Configuration.GetConnectionString("SqlConStr");
+var ConnectionString = builder.Configuration.GetConnectionString("SqlConStr");
 
 //Agregamos el contexto al builder con el ConStr
-builder.Services.AddDbContextFactory<Contexto>(o => o.UseSqlServer(ConStr));
+builder.Services.AddDbContextFactory<Contexto>(o => o.UseSqlServer(ConnectionString));
 
 //Inyección del service
 builder.Services.AddScoped<JugadoresService>();
