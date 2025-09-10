@@ -82,7 +82,7 @@
                 </tbody>
             </table>
 
-            @if (MostrarModal)
+            @if (JugadorAEliminar is not null)
             {
                 <div class="modal-backdrop fade show"></div>
                 <div class="modal show d-block">
@@ -128,7 +128,6 @@
     public string ValorFiltro { get; set; } = string.Empty;
 
     private Jugadores? JugadorAEliminar;
-    private bool MostrarModal = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -170,13 +169,11 @@
     private void MostrarConfirmacion(Jugadores jugador)
     {
         JugadorAEliminar = jugador;
-        MostrarModal = true;
     }
 
     private void CerrarModal()
     {
         JugadorAEliminar = null;
-        MostrarModal = false;
     }
 
     private async Task Restablecer()
