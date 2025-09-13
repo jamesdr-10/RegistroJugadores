@@ -1,4 +1,5 @@
 ﻿@page "/Partida/Index"
+
 @inject PartidasService partidasService
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
@@ -85,10 +86,15 @@
                                     <td> @partida.EstadoPartida</td>
                                     <td> @partida.GanadorId</td>
                                     <td> @partida.TurnoJugadorId</td>
-                                    <td> @partida.FechaInicio</td>
+                                    <td> @partida.FechaInicio.ToString("MM/dd/yyyy")</td>
+                                @if (partida.FechaFin.HasValue)
+                                {
+                                    <td> @partida.FechaFin.Value.ToString("MM/dd/yyyy")</td>
+                                } else
+                                {
                                     <td> @partida.FechaFin</td>
-
-                                    <td>
+                                }
+                                <td>
                                         <a href="/Partida/Edit/@partida.PartidaId" class="btn btn-outline-primary bi bi-pencil-square"></a>
                                     </td>
                             </tr>
