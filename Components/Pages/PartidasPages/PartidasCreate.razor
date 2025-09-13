@@ -131,6 +131,31 @@
 
     private async Task Guardar()
     {
+
+        if (Partida.Jugador1Id > 0 && Partida.Jugador2Id.HasValue && Partida.Jugador1Id == Partida.Jugador2Id.Value)
+        {
+            errorMensaje = "⚠️ Jugador 1 y Jugador 2 no pueden ser el mismo.";
+            return;
+        }
+
+        if (Partida.FechaFin.HasValue && Partida.FechaFin.Value.Date < Partida.FechaInicio.Date)
+        {
+            errorMensaje = "⚠️ La fecha de fin no puede ser anterior a la fecha de inicio.";
+            return;
+        }
+
+        bool jugadorOcupado = ListaPartidas.Any(p =>
+            (p.EstadoPartida == "Pendiente" || p.EstadoPartida == "En curso") &&
+            (p.Jugador1Id == Partida.Jugador1Id || p.Jugador2Id == Partida.Jugador1Id ||
+             (Partida.Jugador2Id.HasValue && (p.Jugador1Id == Partida.Jugador2Id.Value || p.Jugador2Id == Partida.Jugador2Id.Value)))
+        );
+
+        if (jugadorOcupado)
+        {
+            errorMensaje = "⚠️ Uno de los jugadores ya está en otra partida activa.";
+            return;
+        }
+
         if (await partidasService.Guardar(Partida))
         {
             navigationManager.NavigateTo("/Partida/Index");
