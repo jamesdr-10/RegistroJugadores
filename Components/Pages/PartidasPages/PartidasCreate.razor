@@ -81,6 +81,7 @@
                 <div class="mb-3">
                     <label class="form-label"><strong>Turno Jugador ID</strong></label>
                     <InputSelect class="form-select" @bind-Value="Partida.TurnoJugadorId">
+                        <option value="0">Elija un jugador</option>
 
                         @foreach (var jugador in ListaJugadores.Where(j => j.JugadorId == Partida.Jugador1Id || j.JugadorId == Partida.Jugador2Id))
                         {
@@ -94,10 +95,13 @@
                     <InputDate class="form-control" @bind-Value="Partida.FechaInicio" />
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label"><strong>Fecha Fin</strong></label>
-                    <InputDate class="form-control" @bind-Value="Partida.FechaFin" />
-                </div>
+                @if (Partida.EstadoPartida == "Finalizada")
+                {
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Fecha Fin</strong></label>
+                        <InputDate class="form-control" @bind-Value="Partida.FechaFin" />
+                    </div>
+                }
 
                 @if (!string.IsNullOrEmpty(errorMensaje))
                 {
@@ -138,10 +142,30 @@
             return;
         }
 
-        if (Partida.FechaFin.HasValue && Partida.FechaFin.Value.Date < Partida.FechaInicio.Date)
+        if (Partida.EstadoPartida == "Finalizada")
         {
-            errorMensaje = "⚠️ La fecha de fin no puede ser anterior a la fecha de inicio.";
-            return;
+            if (!Partida.FechaFin.HasValue)
+            {
+                errorMensaje = "⚠️ Una partida finalizada debe tener una fecha de fin.";
+                return;
+            }
+
+            if (Partida.FechaFin.Value.Date < Partida.FechaInicio.Date)
+            {
+                errorMensaje = "⚠️ La fecha de fin no puede ser anterior a la fecha de inicio.";
+                return;
+            }
+
+            if (!Partida.GanadorId.HasValue)
+            {
+                errorMensaje = "⚠️ Una partida finalizada debe tener un ganador.";
+                return;
+            }
+        }
+        else
+        {
+            Partida.FechaFin = null;
+            Partida.GanadorId = null;
         }
 
         bool jugadorOcupado = ListaPartidas.Any(p =>
