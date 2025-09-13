@@ -1,0 +1,160 @@
+﻿@page "/Partida/Index"
+@inject PartidasService partidasService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Registro de Partidas</PageTitle>
+<div class="container">
+    <div class="card shadow-lg">
+        <div class="card-header">
+            <h5 class="card-title text-center">Registro de Partidas</h5>
+        </div>
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-3">
+                    <label class="col-form-label"><strong>Filtrar por</strong></label>
+                </div>
+
+                <div class="col-4">
+                    <label class="col-form-label"><strong>Búsqueda</strong></label>
+                </div>
+
+                <div class="col-5 d-flex justify-content-end">
+                    <a href="/Partida/Create" class="btn btn-primary"> <span class="bi bi-plus-square mt-3"></span> Crear</a>
+                </div>
+
+                <div class="row align-items-center">
+
+                    <div class="col-3">
+                        <InputSelect class="form-select" @bind-Value="Filtro">
+                            <option value="" selected disabled>Elija una opción</option>
+                            <option value="@nameof(Partidas.PartidaId)">PartidaId</option>
+                            <option value="@nameof(Partidas.Jugador1Id)">Jugador1Id</option>
+                            <option value="@nameof(Partidas.Jugador2Id)">Jugador2Id</option>
+                            <option value="@nameof(Partidas.EstadoPartida)">EstadoPartida</option>
+                            <option value="@nameof(Partidas.GanadorId)">GanadorId</option>
+                            <option value="@nameof(Partidas.TurnoJugadorId)">TurnoJugadorId</option>
+                            <option value="@nameof(Partidas.FechaInicio)">FechaInicio</option>
+                            <option value="@nameof(Partidas.FechaFin)">FechaFin</option>
+                        </InputSelect>
+                    </div>
+
+                    <div class="col-4">
+                        <div class="input-group">
+                            @if (Filtro == nameof(Partidas.EstadoPartida))
+                            {
+                                <InputSelect class="form-select" @bind-Value="ValorFiltro">
+                                    <option value="Pendiente">Pendiente</option>
+                                    <option value="En curso">En curso</option>
+                                    <option value="Finalizada">Finalizada</option>
+                                </InputSelect>
+                            } 
+                            else
+                            {
+                                <input class="form-control" @bind="ValorFiltro" placeholder="Buscar" />
+                            }
+                            <button type="button" class="btn btn-outline-primary bi bi-search" @onclick="Buscar"></button>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="table table-hover mt-3">
+                    <thead class="table table-striped text-black">
+                        <tr>
+                            <th>Partida ID</th>
+                            <th>Jugador 1 ID</th>
+                            <th>Jugador 2 ID</th>
+                            <th>Estado Partida</th>
+                            <th>Ganador ID</th>
+                            <th>Turno Jugador ID</th>
+                            <th>Fecha Inicio</th>
+                            <th>Fecha Fin</th>
+                            <th>Opciones</th>
+                        </tr>
+                    </thead>
+                        <tbody>
+                            @foreach (var partida in ListaPartidas)
+                            {
+                                <tr>
+                                    <td> @partida.PartidaId</td>
+                                    <td> @partida.Jugador1Id</td>
+                                    <td> @partida.Jugador2Id</td>
+                                    <td> @partida.EstadoPartida</td>
+                                    <td> @partida.GanadorId</td>
+                                    <td> @partida.TurnoJugadorId</td>
+                                    <td> @partida.FechaInicio</td>
+                                    <td> @partida.FechaFin</td>
+
+                                    <td>
+                                        <a href="/Partida/Edit/@partida.PartidaId" class="btn btn-outline-primary bi bi-pencil-square"></a>
+                                    </td>
+                            </tr>
+                            }
+                        </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+            <label>Cantidad: @ListaPartidas.Count()</label>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    public List<Partidas> ListaPartidas { get; set; } = new List<Partidas>();
+
+    public string Filtro { get; set; } = string.Empty;
+    public string ValorFiltro { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaPartidas = await partidasService.Listar(p => p.PartidaId > 0);
+    }
+
+    private async Task Buscar()
+    {
+        if (ValorFiltro.Trim() != "")
+        {
+            if (Filtro == nameof(Partidas.PartidaId) && int.TryParse(ValorFiltro, out var partidaId))
+            {
+                ListaPartidas = await partidasService.Listar(p => p.PartidaId == partidaId);
+            }
+            else if (Filtro == nameof(Partidas.Jugador1Id) && int.TryParse(ValorFiltro, out var jugador1Id))
+            {
+                ListaPartidas = await partidasService.Listar(p => p.Jugador1Id == jugador1Id);
+            }
+            else if (Filtro == nameof(Partidas.Jugador2Id) && int.TryParse(ValorFiltro, out var jugador2Id))
+            {
+                ListaPartidas = await partidasService.Listar(p => p.Jugador2Id == jugador2Id);
+            }
+            else if (Filtro == nameof(Partidas.EstadoPartida))
+            {
+                ListaPartidas = await partidasService.Listar(p => p.EstadoPartida.Equals(ValorFiltro));
+            }
+            else if (Filtro == nameof(Partidas.GanadorId) && int.TryParse(ValorFiltro, out var ganadorId))
+            {
+                ListaPartidas = await partidasService.Listar(p => p.GanadorId == ganadorId);
+            }
+            else if (Filtro == nameof(Partidas.TurnoJugadorId) && int.TryParse(ValorFiltro, out var turnoJugadorId))
+            {
+                ListaPartidas = await partidasService.Listar(p => p.TurnoJugadorId == turnoJugadorId);
+            }
+            else if (Filtro == nameof(Partidas.FechaInicio) && DateTime.TryParse(ValorFiltro, out var fechaInicio))
+            {
+                ListaPartidas = await partidasService.Listar(p => p.FechaInicio.Date == fechaInicio.Date);
+            }
+            else if (Filtro == nameof(Partidas.FechaFin) && DateTime.TryParse(ValorFiltro, out var fechaFin))
+            {
+                ListaPartidas = await partidasService.Listar(p => p.FechaFin != null && p.FechaFin.Value.Date == fechaFin.Date);
+            }
+        }
+        else
+        {
+            ListaPartidas = await partidasService.Listar(p => p.PartidaId > 0);
+        }
+    }
+}
