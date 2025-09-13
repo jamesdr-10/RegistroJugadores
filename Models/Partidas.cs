@@ -9,6 +9,7 @@ public class Partidas
     [Key]
     public int PartidaId { get; set; }
 
+    [Range(1, int.MaxValue, ErrorMessage = "Debe de elegir un Jugador 1.")]
     public int Jugador1Id { get; set; }
     public int? Jugador2Id { get; set; }
 
@@ -17,6 +18,8 @@ public class Partidas
     public string EstadoPartida { get; set; }
 
     public int? GanadorId { get; set; }
+
+    [Range(1, int.MaxValue, ErrorMessage = "Debe de elegir el turno de un jugador.")]
     public int TurnoJugadorId { get; set; }
 
     public DateTime FechaInicio { get; set; } = DateTime.UtcNow;
