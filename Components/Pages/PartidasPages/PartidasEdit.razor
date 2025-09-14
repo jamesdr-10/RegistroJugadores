@@ -19,7 +19,7 @@
 
                 <div class="mb-3">
                     <label class="form-label"><strong>PartidaId</strong></label>
-                    <InputNumber class="form-control" @bind-Value="Partida.PartidaId" readonly />
+                    <InputNumber class="form-control" @bind-Value="Partida.PartidaId" readonly></InputNumber>
                 </div>
 
                 <div class="mb-3">
@@ -32,6 +32,7 @@
                             <option value="@jugador.JugadorId">@jugador.Nombres</option>
                         }
                     </InputSelect>
+                    <ValidationMessage For="(() => Partida.Jugador1Id)" />
                 </div>
 
                 <div class="mb-3">
@@ -49,19 +50,12 @@
                 <div class="mb-3">
                     <label class="form-label"><strong>Estado</strong></label>
                     <InputSelect class="form-select" @bind-Value="Partida.EstadoPartida">
-                        @if (Partida.Jugador1Id > 0 && Partida.Jugador2Id.HasValue)
-                        {
-                            <option value="Pendiente" disabled>Pendiente</option>
-                            <option value="En curso">En curso</option>
-                            <option value="Finalizada">Finalizada</option>
-                        }
-                        else
-                        {
-                            <option value="Pendiente">Pendiente</option>
-                            <option value="En curso" disabled>En curso</option>
-                            <option value="Finalizada" disabled>Finalizada</option>
-                        }
+                        <option value="" selected disabled>Elija un estado</option>
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="En curso">En curso</option>
+                        <option value="Finalizada">Finalizada</option>
                     </InputSelect>
+                    <ValidationMessage For="(() => Partida.EstadoPartida)" />
                 </div>
 
                 <div class="mb-3">
@@ -82,12 +76,14 @@
                 <div class="mb-3">
                     <label class="form-label"><strong>Turno Jugador ID</strong></label>
                     <InputSelect class="form-select" @bind-Value="Partida.TurnoJugadorId">
+                        <option value="0">Elija un jugador</option>
 
                         @foreach (var jugador in ListaJugadores.Where(j => j.JugadorId == Partida.Jugador1Id || j.JugadorId == Partida.Jugador2Id))
                         {
                             <option value="@jugador.JugadorId">@jugador.Nombres</option>
                         }
                     </InputSelect>
+                    <ValidationMessage For="(() => Partida.TurnoJugadorId)" />
                 </div>
 
                 <div class="mb-3">
@@ -145,6 +141,18 @@
         if (Partida.Jugador1Id > 0 && Partida.Jugador2Id.HasValue && Partida.Jugador1Id == Partida.Jugador2Id.Value)
         {
             errorMensaje = "⚠️ Jugador 1 y Jugador 2 no pueden ser el mismo.";
+            return;
+        }
+
+        if (Partida.Jugador1Id > 0 && Partida.Jugador2Id.HasValue && Partida.EstadoPartida == "Pendiente")
+        {
+            errorMensaje = "⚠️ La partida no puede estar pendiente si ya hay 2 jugadores seleccionados.";
+            return;
+        }
+
+        if (Partida.Jugador1Id > 0 && Partida.Jugador2Id == null && Partida.EstadoPartida != "Pendiente")
+        {
+            errorMensaje = "⚠️ Una partida sin dos jugadores no puede estar en curso o finalizada.";
             return;
         }
 

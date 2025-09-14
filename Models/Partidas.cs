@@ -13,7 +13,7 @@ public class Partidas
     public int Jugador1Id { get; set; }
     public int? Jugador2Id { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "Debe elegir un estado de la partida.")]
     [StringLength(20)]
     public string EstadoPartida { get; set; }
 
