@@ -65,7 +65,7 @@
 
                         @if (Partida.EstadoPartida == "Finalizada")
                         {
-                            @foreach (var jugador in ListaJugadores.Where(j => j.JugadorId == Partida.Jugador1Id || j.JugadorId == Partida.Jugador2Id))
+                            @foreach (var jugador in ListaJugadores)
                             {
                                 <option value="@jugador.JugadorId">@jugador.Nombres</option>
                             }
@@ -78,7 +78,7 @@
                     <InputSelect class="form-select" @bind-Value="Partida.TurnoJugadorId">
                         <option value="0">Elija un jugador</option>
 
-                        @foreach (var jugador in ListaJugadores.Where(j => j.JugadorId == Partida.Jugador1Id || j.JugadorId == Partida.Jugador2Id))
+                        @foreach (var jugador in ListaJugadores)
                         {
                             <option value="@jugador.JugadorId">@jugador.Nombres</option>
                         }
@@ -156,8 +156,20 @@
             return;
         }
 
+        if (Partida.TurnoJugadorId != Partida.Jugador1Id && Partida.TurnoJugadorId != Partida.Jugador2Id)
+        {
+            errorMensaje = "⚠️ El turno del jugador debe ser jugador 1 o jugador 2.";
+            return;
+        }
+
         if (Partida.EstadoPartida == "Finalizada")
         {
+            if (Partida.GanadorId != Partida.Jugador1Id && Partida.GanadorId != Partida.Jugador2Id)
+            {
+                errorMensaje = "⚠️ El ganador tiene que ser jugador 1 o jugador 2.";
+                return;
+            }
+
             if (!Partida.FechaFin.HasValue)
             {
                 errorMensaje = "⚠️ Una partida finalizada debe tener una fecha de fin.";
