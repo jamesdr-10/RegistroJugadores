@@ -10,6 +10,9 @@ public class Jugadores
     [Required(ErrorMessage = "El nombre no puede estar vacío.")]
     public string Nombres { get; set; } = null!;
 
-    [Range(0, int.MaxValue, ErrorMessage = "La cantidad de partidas jugadas debe ser mayor o igual que cero.")]
-    public int Partidas { get; set; }
+    public int Victorias { get; set; } = 0;
+
+    public int Empates { get; set; } = 0;
+
+    public int Derrotas { get; set; } = 0;
 }
