@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace RegistroJugadores;
+namespace RegistroJugadores.Models;
 
 public class Partidas
 {
@@ -22,6 +22,9 @@ public class Partidas
     [Range(1, int.MaxValue, ErrorMessage = "Debe de elegir el turno de un jugador.")]
     public int TurnoJugadorId { get; set; }
 
+    [StringLength(9)]
+    public string EstadoTablero { get; set; }
+
     public DateTime FechaInicio { get; set; } = DateTime.UtcNow;
     public DateTime? FechaFin { get; set; }
 
@@ -37,4 +40,6 @@ public class Partidas
 
     [ForeignKey(nameof(TurnoJugadorId))]
     public virtual Jugadores TurnoJugador { get; set; }
+
+    public virtual ICollection<Movimientos> Movimientos { get; set; } = new List<Movimientos>();
 }
