@@ -7,6 +7,7 @@ public class Contexto : DbContext
 {
     public DbSet<Jugadores> Jugadores { get; set; }
     public DbSet<Partidas> Partidas { get; set; }
+    public DbSet<Movimientos> Movimientos { get; set; }
 
     public Contexto(DbContextOptions<Contexto> options) : base(options) { }
 
@@ -34,6 +35,18 @@ public class Contexto : DbContext
             .HasOne(p => p.TurnoJugador)
             .WithMany()
             .HasForeignKey(p => p.TurnoJugadorId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Movimientos>()
+            .HasOne(m => m.Partida)
+            .WithMany(p => p.Movimientos)
+            .HasForeignKey(m => m.PartidaId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Movimientos>()
+            .HasOne(m => m.Jugador)
+            .WithMany(j => j.Movimientos)
+            .HasForeignKey(m => m.JugadorId)
             .OnDelete(DeleteBehavior.Restrict);
 
         base.OnModelCreating(modelBuilder);
