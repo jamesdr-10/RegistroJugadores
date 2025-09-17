@@ -1,0 +1,232 @@
+﻿@page "/Partida/Edit/{PartidaId:int}"
+
+@inject PartidasService partidasService
+@inject JugadoresService jugadoresService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Editar Partida</PageTitle>
+<EditForm Model="Partida" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+
+    <div class="container">
+        <div class="card shadow-lg">
+            <div class="card-header text-center">
+                <h5 class="card-title">Editar Partida</h5>
+            </div>
+
+            <div class="card-body">
+
+                <div class="mb-3">
+                    <label class="form-label"><strong>Partida ID</strong></label>
+                    <InputNumber class="form-control" @bind-Value="Partida.PartidaId" readonly></InputNumber>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"><strong>Jugador 1</strong></label>
+                    <InputSelect class="form-select" @bind-Value="Partida.Jugador1Id">
+                        <option value="0">Elija un jugador</option>
+
+                        @foreach (var jugador in ListaJugadores)
+                        {
+                            <option value="@jugador.JugadorId">@jugador.Nombres</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="(() => Partida.Jugador1Id)" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"><strong>Jugador 2</strong></label>
+                    <InputSelect class="form-select" @bind-Value="Partida.Jugador2Id">
+                        <option value="">Elija un jugador</option>
+
+                        @foreach (var jugador in ListaJugadores)
+                        {
+                            <option value="@jugador.JugadorId">@jugador.Nombres</option>
+                        }
+                    </InputSelect>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"><strong>Estado</strong></label>
+                    <InputSelect class="form-select" @bind-Value="Partida.EstadoPartida">
+                        <option value="" selected disabled>Elija un estado</option>
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="En curso">En curso</option>
+                        <option value="Finalizada">Finalizada</option>
+                    </InputSelect>
+                    <ValidationMessage For="(() => Partida.EstadoPartida)" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"><strong>Ganador</strong></label>
+                    <InputSelect class="form-select" @bind-Value="Partida.GanadorId">
+                        <option value="">Elija un ganador</option>
+
+                        @if (Partida.EstadoPartida == "Finalizada")
+                        {
+                            @foreach (var jugador in ListaJugadores)
+                            {
+                                <option value="@jugador.JugadorId">@jugador.Nombres</option>
+                            }
+                        }
+                    </InputSelect>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"><strong>Turno Jugador</strong></label>
+                    <InputSelect class="form-select" @bind-Value="Partida.TurnoJugadorId">
+                        <option value="0">Elija un jugador</option>
+
+                        @foreach (var jugador in ListaJugadores)
+                        {
+                            <option value="@jugador.JugadorId">@jugador.Nombres</option>
+                        }
+                    </InputSelect>
+                    <ValidationMessage For="(() => Partida.TurnoJugadorId)" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label"><strong>Fecha Inicio</strong></label>
+                    <InputDate class="form-control" @bind-Value="Partida.FechaInicio" />
+                </div>
+
+                @if (Partida.EstadoPartida == "Finalizada")
+                {
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Fecha Fin</strong></label>
+                        <InputDate class="form-control" @bind-Value="Partida.FechaFin" />
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(errorMensaje))
+                {
+                    <div class="alert alert-danger">@errorMensaje</div>
+                }
+            </div>
+
+            <div class="card-footer text-center">
+                <a href="/Partida/Index" class="btn btn-secondary">
+                    <span class="bi bi-arrow-left"></span> Volver
+                </a>
+                <button type="submit" class="btn btn-primary bi bi-floppy"> Guardar</button>
+                <button type="button" class="btn btn-danger bi bi-trash" @onclick="Eliminar"> Eliminar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int PartidaId { get; set; }
+
+    public Partidas Partida { get; set; } = new Partidas();
+    public List<Jugadores> ListaJugadores { get; set; } = new List<Jugadores>();
+    public List<Partidas> ListaPartidas { get; set; } = new List<Partidas>();
+
+    private string errorMensaje = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (PartidaId > 0)
+        {
+            Partida = await partidasService.Buscar(PartidaId) ?? new Partidas();
+            ListaJugadores = await jugadoresService.Listar(j => j.JugadorId > 0);
+            ListaPartidas = await partidasService.Listar(p => p.PartidaId > 0);
+        }
+    }
+
+    private async Task Guardar()
+    {
+        if (Partida.Jugador1Id > 0 && Partida.Jugador2Id.HasValue && Partida.Jugador1Id == Partida.Jugador2Id.Value)
+        {
+            errorMensaje = "⚠️ Jugador 1 y Jugador 2 no pueden ser el mismo.";
+            return;
+        }
+
+        if (Partida.Jugador1Id > 0 && Partida.Jugador2Id.HasValue && Partida.EstadoPartida == "Pendiente")
+        {
+            errorMensaje = "⚠️ La partida no puede estar pendiente si ya hay 2 jugadores seleccionados.";
+            return;
+        }
+
+        if (Partida.Jugador1Id > 0 && Partida.Jugador2Id == null && Partida.EstadoPartida != "Pendiente")
+        {
+            errorMensaje = "⚠️ Una partida sin dos jugadores no puede estar en curso o finalizada.";
+            return;
+        }
+
+        if (Partida.TurnoJugadorId != Partida.Jugador1Id && Partida.TurnoJugadorId != Partida.Jugador2Id)
+        {
+            errorMensaje = "⚠️ El turno del jugador debe ser jugador 1 o jugador 2.";
+            return;
+        }
+
+        if (Partida.EstadoPartida == "Finalizada")
+        {
+            if (Partida.GanadorId != Partida.Jugador1Id && Partida.GanadorId != Partida.Jugador2Id)
+            {
+                errorMensaje = "⚠️ El ganador tiene que ser jugador 1 o jugador 2.";
+                return;
+            }
+
+            if (!Partida.FechaFin.HasValue)
+            {
+                errorMensaje = "⚠️ Una partida finalizada debe tener una fecha de fin.";
+                return;
+            }
+
+            if (Partida.FechaFin.Value.Date < Partida.FechaInicio.Date)
+            {
+                errorMensaje = "⚠️ La fecha de fin no puede ser anterior a la fecha de inicio.";
+                return;
+            }
+
+            if (!Partida.GanadorId.HasValue)
+            {
+                errorMensaje = "⚠️ Una partida finalizada debe tener un ganador.";
+                return;
+            }
+        }
+        else
+        {
+            Partida.FechaFin = null;
+            Partida.GanadorId = null;
+        }
+
+
+        bool jugadorOcupado = ListaPartidas.Any(p =>
+            p.PartidaId != Partida.PartidaId &&
+            (p.EstadoPartida == "Pendiente" || p.EstadoPartida == "En curso") &&
+            (p.Jugador1Id == Partida.Jugador1Id || p.Jugador2Id == Partida.Jugador1Id ||
+             (Partida.Jugador2Id.HasValue && (p.Jugador1Id == Partida.Jugador2Id.Value || p.Jugador2Id == Partida.Jugador2Id.Value)))
+        );
+
+        if (jugadorOcupado)
+        {
+            errorMensaje = "⚠️ Uno de los jugadores ya está en otra partida activa.";
+            return;
+        }
+
+        if (await partidasService.Guardar(Partida))
+        {
+            navigationManager.NavigateTo("/Partida/Index");
+        }
+        else
+        {
+            errorMensaje = "⚠️ No se pudo guardar la partida.";
+        }
+    }
+
+    private async Task Eliminar()
+    {
+        if (await partidasService.Eliminar(Partida.PartidaId))
+        {
+            navigationManager.NavigateTo("/Partida/Index");
+        }
+        else
+        {
+            errorMensaje = "⚠️ No se pudo eliminar la partida.";
+        }
+    }
+}
