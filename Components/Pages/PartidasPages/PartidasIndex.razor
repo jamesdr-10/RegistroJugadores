@@ -89,10 +89,10 @@
                                     <td> @partida.EstadoTablero</td>
                                     <td> @partida.Ganador?.Nombres</td>
                                     <td> @partida.TurnoJugador?.Nombres</td>
-                                    <td> @partida.FechaInicio.ToString("MM/dd/yyyy")</td>
+                                    <td> @partida.FechaInicio</td>
                                 @if (partida.FechaFin.HasValue)
                                 {
-                                    <td> @partida.FechaFin.Value.ToString("MM/dd/yyyy")</td>
+                                    <td> @partida.FechaFin</td>
                                 } else
                                 {
                                     <td> @partida.FechaFin</td>
