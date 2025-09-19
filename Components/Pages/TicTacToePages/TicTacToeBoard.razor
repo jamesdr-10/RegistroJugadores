@@ -35,6 +35,9 @@
     [Parameter] 
     public int PartidaId { get; set; }
 
+    private string? jugador1Nombre;
+    private string? jugador2Nombre;
+
     private Partidas? partida;
     private enum PlayerType { X, O }
 
@@ -59,9 +62,9 @@
             if (partida == null) return "Cargando...";
             if (partida.EstadoPartida == "Pendiente")
                 return "⌛ Esperando Jugador O...";
-            if (winner != null) return $"🏆 ¡Ganador: {winner}!";
+            if (winner != null) return $"🏆 ¡Ganador: {GetNombreJugador(winner.Value)}!";
             if (esEmpate) return "🤝 ¡Es un empate!";
-            return $"Turno de: {_currentPlayerType}";
+            return $"Turno de: {GetNombreJugador(_currentPlayerType)}";
         }
     }
 
@@ -73,6 +76,15 @@
         {
             navigationManager.NavigateTo("/TicTacToe/Selection");
             return;
+        }
+
+        var jugador1 = await jugadoresService.Buscar(partida.Jugador1Id);
+        jugador1Nombre = jugador1?.Nombres;
+
+        if (partida.Jugador2Id.HasValue)
+        {
+            var jugador2 = await jugadoresService.Buscar(partida.Jugador2Id.Value);
+            jugador2Nombre = jugador2?.Nombres;
         }
 
         board = partida.EstadoTablero
@@ -203,5 +215,12 @@
     {
         if (!player.HasValue) return "";
         return player == PlayerType.X ? "player-x" : "player-o";
+    }
+
+    private string GetNombreJugador(PlayerType player)
+    {
+        return player == PlayerType.X
+            ? jugador1Nombre ?? "Jugador X"
+            : jugador2Nombre ?? "Jugador O";
     }
 }
