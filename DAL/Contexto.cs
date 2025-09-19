@@ -41,13 +41,13 @@ public class Contexto : DbContext
             .HasOne(m => m.Partida)
             .WithMany(p => p.Movimientos)
             .HasForeignKey(m => m.PartidaId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         modelBuilder.Entity<Movimientos>()
             .HasOne(m => m.Jugador)
             .WithMany(j => j.Movimientos)
             .HasForeignKey(m => m.JugadorId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         base.OnModelCreating(modelBuilder);
     }
