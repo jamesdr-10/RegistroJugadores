@@ -1,0 +1,117 @@
+﻿@page "/TicTacToe/Selection"
+
+@inject JugadoresService jugadoresService
+@inject PartidasService partidasService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Selección de jugadores - TicTacToe</PageTitle>
+<div class="container mx-auto max-w-lg p-6 bg-white rounded-lg shadow-xl text-center">
+
+    <div class="game-container">
+        <div class="selection-screen">
+            <h1>Elige tu jugador</h1>
+
+            @if (!string.IsNullOrEmpty(errorMensaje))
+            {
+                <div class="alert alert-danger">@errorMensaje</div>
+            }
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Jugador X</label>
+                <InputSelect class="form-select" @bind-Value="jugadorXId">
+                    <option value=""> --- Seleccione jugador X --- </option>
+                    @foreach (var jugador in ListaJugadores)
+                    {
+                        @if (jugador.JugadorId == jugadorOId)
+                        {
+                            <option value="" disabled>@jugador.Nombres</option>
+                        } else
+                        {
+                            <option value="@jugador.JugadorId">@jugador.Nombres</option>
+                        }
+                    }
+                </InputSelect>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Jugador O</label>
+                <InputSelect class="form-select" @bind-Value="jugadorOId">
+                    <option value=""> --- Seleccione jugador O --- </option>
+                    @foreach (var jugador in ListaJugadores)
+                    {
+                        @if (jugador.JugadorId == jugadorXId)
+                        {
+                            <option value="" disabled>@jugador.Nombres</option>
+                        } else
+                        {
+                            <option value="@jugador.JugadorId">@jugador.Nombres</option>
+                        }
+                    }
+                </InputSelect>
+            </div>
+
+            <button class="btn btn-success btn-lg mt-4"
+                    disabled="@(jugadorXId == null || jugadorXId == jugadorOId)"
+                    @onclick="StartGame">
+                Iniciar Partida
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<Jugadores> ListaJugadores { get; set; } = new List<Jugadores>();
+
+    private int? jugadorXId;
+    private int? jugadorOId;
+
+    private string errorMensaje = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListaJugadores = await jugadoresService.Listar(j => j.JugadorId > 0);
+    }
+
+    private async Task StartGame()
+    {
+        errorMensaje = string.Empty;
+
+        var partidasActivasJugador1 = await partidasService.Listar(p =>
+            (p.Jugador1Id == jugadorXId || p.Jugador2Id == jugadorXId) &&
+            (p.EstadoPartida == "En curso" || p.EstadoPartida == "Pendiente"));
+
+        if (partidasActivasJugador1.Any())
+        {
+            errorMensaje = "⚠️ El jugador X ya tiene una partida activa.";
+            return;
+        }
+
+        if (jugadorOId != null)
+        {
+            var partidasActivasJugador2 = await partidasService.Listar(p =>
+                (p.Jugador1Id == jugadorOId || p.Jugador2Id == jugadorOId) &&
+                (p.EstadoPartida == "En curso" || p.EstadoPartida == "Pendiente"));
+
+            if (partidasActivasJugador2.Any())
+            {
+                errorMensaje = "⚠️ El jugador O ya tiene una partida activa.";
+                return;
+            }
+        }
+
+        var partida = new Partidas
+        {
+            Jugador1Id = jugadorXId.Value,
+            Jugador2Id = jugadorOId,
+            EstadoPartida = jugadorOId == null ? "Pendiente" : "En curso",
+            TurnoJugadorId = jugadorXId.Value,
+            EstadoTablero = "---------",
+            FechaInicio = DateTime.UtcNow
+        };
+
+        await partidasService.Guardar(partida);
+
+        navigationManager.NavigateTo($"/TicTacToe/Board/{partida.PartidaId}");
+    }
+}
