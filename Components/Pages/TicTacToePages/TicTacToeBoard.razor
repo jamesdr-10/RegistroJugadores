@@ -1,0 +1,207 @@
+﻿@page "/TicTacToe/Board/{PartidaId:int}"
+
+@inject PartidasService partidasService
+@inject JugadoresService jugadoresService
+@inject MovimientosService movimientosService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<div class="container mx-auto max-w-lg p-6 bg-white rounded-lg shadow-xl text-center">
+
+    <div class="game-container">
+        <div class="game-screen">
+            <h2 class="game-status">@GameStatus</h2>
+
+            <div class="game-board">
+                @for (var i = 0; i < 9; i++)
+                {
+                    var cellIndex = i; // Copia local para evitar problemas con el closure en el lambda
+                    <button class="cell @GetPlayerClass(board[cellIndex])"
+                        @onclick="() => HandleCellClick(cellIndex)"
+                        disabled="@(board[cellIndex] != null || winner != null || esEmpate)">
+                        @board[cellIndex]?.ToString()
+                    </button>
+                }
+            </div>
+
+            <button class="btn btn-secondary mt-4" @onclick="RestartGame">
+                Reiniciar Juego
+            </button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] 
+    public int PartidaId { get; set; }
+
+    private Partidas? partida;
+    private enum PlayerType { X, O }
+
+    private PlayerType? playerTypeSelection;
+    private PlayerType?[] board = new PlayerType?[9];
+    private PlayerType _currentPlayerType = PlayerType.X;
+    private PlayerType? winner;
+    private bool esEmpate;
+
+    private bool PuedeJugar =>
+    partida != null &&
+    (
+        (partida.EstadoPartida == "En curso" && partida.Jugador2Id != null)
+
+        || (partida.EstadoPartida == "Pendiente" && partida.Jugador2Id == null && !board.Any(c => c == PlayerType.X))
+    );
+
+    private string GameStatus
+    {
+        get
+        {
+            if (partida == null) return "Cargando...";
+            if (partida.EstadoPartida == "Pendiente")
+                return "⌛ Esperando Jugador O...";
+            if (winner != null) return $"🏆 ¡Ganador: {winner}!";
+            if (esEmpate) return "🤝 ¡Es un empate!";
+            return $"Turno de: {_currentPlayerType}";
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        partida = await partidasService.Buscar(PartidaId);
+
+        if (partida == null)
+        {
+            navigationManager.NavigateTo("/TicTacToe/Selection");
+            return;
+        }
+
+        board = partida.EstadoTablero
+            .Select(c => c switch
+            {
+                'X' => PlayerType.X,
+                'O' => PlayerType.O,
+                _ => (PlayerType?)null
+            })
+            .ToArray();
+
+        _currentPlayerType = partida.TurnoJugadorId == partida.Jugador1Id
+       ? PlayerType.X
+       : PlayerType.O;
+    }
+
+    private async Task HandleCellClick(int index)
+    {
+        if (!PuedeJugar || board[index] != null || winner != null || esEmpate || partida == null)
+        {
+            return;
+        }
+
+        board[index] = _currentPlayerType;
+
+        var movimiento = new Movimientos
+        {
+            PartidaId = partida.PartidaId,
+            JugadorId = _currentPlayerType == PlayerType.X
+                ? partida.Jugador1Id
+                : (partida.Jugador2Id ?? partida.Jugador1Id),
+            PosicionFila = index / 3,
+            PosicionColumna = index % 3,
+            FechaMovimiento = DateTime.UtcNow
+        };
+
+        await movimientosService.Guardar(movimiento);
+
+        partida.EstadoTablero = new string(board.Select(c => c == null ? '-' : c == PlayerType.X ? 'X' : 'O').ToArray());
+
+        winner = CheckForWinner();
+        if (winner != null)
+        {
+            await FinalizarPartida(winner.Value);
+            return; // El juego termina
+        }
+
+        // Comprobar empate
+        esEmpate = board.All(cell => cell != null);
+        if (esEmpate)
+        {
+            await FinalizarPartida(null);
+            return; // El juego termina
+        }
+
+        // Cambiar turno
+        if (partida.Jugador2Id != null)
+        {
+            _currentPlayerType = _currentPlayerType == PlayerType.X ? PlayerType.O : PlayerType.X;
+            partida.TurnoJugadorId = _currentPlayerType == PlayerType.X
+                ? partida.Jugador1Id
+                : partida.Jugador2Id.Value;
+        }
+
+        await partidasService.Guardar(partida);
+    }
+
+    private PlayerType? CheckForWinner()
+    {
+        var winningLines = new[]
+        {
+             new[] {0, 1, 2}, new[] {3, 4, 5}, new[] {6, 7, 8},// Horizontales
+             new[] {0, 3, 6}, new[] {1, 4, 7}, new[] {2, 5, 8},// Verticales
+             new[] {0, 4, 8}, new[] {2, 4, 6}// Diagonales
+        };
+
+        foreach (var line in winningLines)
+        {
+            var (a, b, c) = (line[0], line[1], line[2]);
+            if (board[a].HasValue && board[a] == board[b] && board[a] == board[c])
+            {
+                return board[a];
+            }
+        }
+
+        return null; // No hay ganador
+    }
+
+    private async Task FinalizarPartida(PlayerType? ganador)
+    {
+        if (partida == null) return;
+
+        partida.FechaFin = DateTime.UtcNow;
+        partida.EstadoPartida = "Finalizada";
+
+        var jugador1 = await jugadoresService.Buscar(partida.Jugador1Id);
+        Jugadores? jugador2 = partida.Jugador2Id.HasValue ? await jugadoresService.Buscar(partida.Jugador2Id.Value) : null;
+
+        if (ganador == PlayerType.X)
+        {
+            partida.GanadorId = jugador1.JugadorId;
+            jugador1.Victorias++;
+            if (jugador2 != null) jugador2.Derrotas++;
+        }
+        else if (ganador == PlayerType.O && jugador2 != null)
+        {
+            partida.GanadorId = jugador2.JugadorId;
+            jugador2.Victorias++;
+            jugador1.Derrotas++;
+        }
+        else
+        {
+            jugador1.Empates++;
+            if (jugador2 != null) jugador2.Empates++;
+        }
+
+        await partidasService.Guardar(partida);
+        await jugadoresService.Guardar(jugador1);
+        if (jugador2 != null) await jugadoresService.Guardar(jugador2);
+    }
+
+    private void RestartGame()
+    {
+        navigationManager.NavigateTo("/TicTacToe/Selection");
+    }
+
+    private string GetPlayerClass(PlayerType? player)
+    {
+        if (!player.HasValue) return "";
+        return player == PlayerType.X ? "player-x" : "player-o";
+    }
+}
