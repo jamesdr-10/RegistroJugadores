@@ -10,8 +10,8 @@
 
     <div class="container">
         <div class="card shadow-lg">
-            <div class="card-header text-center">
-                <h5 class="card-title">Editar Jugador</h5>
+            <div class="card-header">
+                <h5 class="card-title text-center">Editar Jugador</h5>
             </div>
 
             <div class="card-body">
@@ -27,12 +27,6 @@
                     <ValidationMessage For="(() => Jugador.Nombres)" />
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label"><strong>Partidas</strong></label>
-                    <InputNumber class="form-control" @bind-Value="Jugador.Partidas"></InputNumber>
-                    <ValidationMessage For="(() => Jugador.Partidas)" />
-                </div>
-
                 @if (!string.IsNullOrEmpty(errorMensaje))
                 {
                     <div class="alert alert-danger">@errorMensaje</div>
@@ -41,8 +35,8 @@
 
             <div class="card-footer text-center">
                 <a href="/Jugador/Index" class="btn btn-secondary"><span class="bi bi-arrow-left"></span> Volver</a>
-                <button type="submit" class="btn btn-success bi bi-floppy"> Guardar</button>
-                <a href="/Jugador/Create" class="btn btn-primary"><span class="bi bi-check-circle"></span> Nuevo</a>
+                <button type="submit" class="btn btn-primary bi bi-floppy"> Guardar</button>
+                <button type="button" class="btn btn-danger bi bi-trash" @onclick="Eliminar"> Eliminar</button>
             </div>
         </div>
     </div>
@@ -71,6 +65,17 @@
         } else
         {
             errorMensaje = "⚠️ Ya existe un usuario con este nombre.";
+        }
+    }
+
+    private async Task Eliminar()
+    {
+        if (await jugadoresService.Eliminar(Jugador.JugadorId))
+        {
+            navigationManager.NavigateTo("/Jugador/Index");
+        } else
+        {
+            errorMensaje = "⚠️ No se pudo eliminar el jugador.";
         }
     }
 }

@@ -35,7 +35,8 @@
                             <option value="@nameof(Partidas.PartidaId)">Partida ID</option>
                             <option value="@nameof(Partidas.Jugador1Id)">Jugador 1</option>
                             <option value="@nameof(Partidas.Jugador2Id)">Jugador 2</option>
-                            <option value="@nameof(Partidas.EstadoPartida)">Estado</option>
+                            <option value="@nameof(Partidas.EstadoPartida)">Estado Partida</option>
+                            <option value="@nameof(Partidas.EstadoTablero)">Estado Tablero</option>
                             <option value="@nameof(Partidas.GanadorId)">Ganador</option>
                             <option value="@nameof(Partidas.TurnoJugadorId)">Turno Jugador</option>
                             <option value="@nameof(Partidas.FechaInicio)">Fecha Inicio</option>
@@ -68,7 +69,8 @@
                             <th>Partida ID</th>
                             <th>Jugador 1</th>
                             <th>Jugador 2</th>
-                            <th>Estado</th>
+                            <th>Estado Partida</th>
+                            <th>Estado Tablero</th>
                             <th>Ganador</th>
                             <th>Turno Jugador</th>
                             <th>Fecha Inicio</th>
@@ -84,12 +86,13 @@
                                     <td> @partida.Jugador1?.Nombres</td>
                                     <td> @partida.Jugador2?.Nombres</td>
                                     <td> @partida.EstadoPartida</td>
+                                    <td> @partida.EstadoTablero</td>
                                     <td> @partida.Ganador?.Nombres</td>
                                     <td> @partida.TurnoJugador?.Nombres</td>
-                                    <td> @partida.FechaInicio.ToString("MM/dd/yyyy")</td>
+                                    <td> @partida.FechaInicio</td>
                                 @if (partida.FechaFin.HasValue)
                                 {
-                                    <td> @partida.FechaFin.Value.ToString("MM/dd/yyyy")</td>
+                                    <td> @partida.FechaFin</td>
                                 } else
                                 {
                                     <td> @partida.FechaFin</td>
@@ -140,6 +143,10 @@
             else if (Filtro == nameof(Partidas.EstadoPartida))
             {
                 ListaPartidas = await partidasService.Listar(p => p.EstadoPartida.Equals(ValorFiltro));
+            } 
+            else if (Filtro == nameof(Partidas.EstadoTablero))
+            {
+                ListaPartidas = await partidasService.Listar(p => p.EstadoTablero.Contains(ValorFiltro));
             }
             else if (Filtro == nameof(Partidas.GanadorId))
             {

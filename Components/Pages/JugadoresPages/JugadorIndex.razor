@@ -6,9 +6,9 @@
 
 <PageTitle>Registro de Jugadores</PageTitle>
 <div class="container">
-    <div class="card-shadow-lg">
-        <div class="card-header text-center">
-            <h5 class="card-title">Registro de Jugadores</h5>
+    <div class="card shadow-lg">
+        <div class="card-header">
+            <h5 class="card-title text-center">Registro de Jugadores</h5>
         </div>
 
         <div class="card-body">
@@ -24,7 +24,7 @@
                 </div>
 
                 <div class="col-5 d-flex justify-content-end">
-                    <a href="/Jugador/Create" class="btn btn-success"> <span class="bi bi-plus-square mt-3"></span> Crear</a>
+                    <a href="/Jugador/Create" class="btn btn-primary"> <span class="bi bi-plus-square mt-3"></span> Crear</a>
                 </div>
             </div>
 
@@ -33,17 +33,18 @@
                 <div class="col-3">
                     <InputSelect class="form-select" @bind-Value="Filtro">
                         <option value="" selected disabled>Elija una opción</option>
-                        <option value="JugadorId">JugadorId</option>
+                        <option value="JugadorId">Jugador ID</option>
                         <option value="Nombres">Nombres</option>
-                        <option value="Partidas">Partidas</option>
+                        <option value="Victorias">Victorias</option>
+                        <option value="Empates">Empates</option>
+                        <option value="Derrotas">Derrotas</option>
                     </InputSelect>
                 </div>
 
                 <div class="col-4">
                     <div class="input-group">
                         <input class="form-control" @bind="ValorFiltro" placeholder="Buscar" />
-                        <button type="button" class="btn btn-primary bi bi-search" @onclick="Buscar"> Buscar</button>
-                        <button type="button" class="btn btn-secondary ms-1" @onclick="Restablecer"><i class="bi bi-arrow-clockwise"></i></button>
+                        <button type="button" class="btn btn-outline-primary bi bi-search" @onclick="Buscar"> Buscar</button>
                     </div>
                 </div>
             </div>
@@ -53,9 +54,10 @@
                     <tr>
                         <th>JugadorId</th>
                         <th>Nombres</th>
-                        <th>Partidas</th>
+                        <th>Victorias</th>
+                        <th>Empates</th>
+                        <th>Derrotas</th>
                         <th>Editar</th>
-                        <th>Eliminar</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -64,56 +66,17 @@
                         <tr>
                             <td> @jugador.JugadorId</td>
                             <td> @jugador.Nombres</td>
-                            <td> @jugador.Partidas</td>
+                            <td> @jugador.Victorias</td>
+                            <td> @jugador.Empates</td>
+                            <td> @jugador.Derrotas</td>
 
                             <td>
-                                <a href="/Jugador/Edit/@jugador.JugadorId" class="btn btn-warning">
-                                    <span class="bi bi-pencil-square"></span>
-                                </a>
-                            </td>
-
-                            <td>
-                                <button class="btn btn-danger" @onclick="() => MostrarConfirmacion(jugador)">
-                                    <span class="bi bi-trash"></span>
-                                </button>
+                                <a href="/Jugador/Edit/@jugador.JugadorId" class="btn btn-outline-primary bi bi-pencil-square"></a>
                             </td>
                         </tr>
                     }
                 </tbody>
             </table>
-
-            @if (JugadorAEliminar is not null)
-            {
-                <div class="modal-backdrop fade show"></div>
-                <div class="modal show d-block">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-
-                            <div class="modal-header bg-primary text-white text-center">
-                                <h5 class="modal-title w-100">Eliminar Jugador</h5>
-                            </div>
-
-                            <div class="modal-body">
-                                <p class="text-danger text-center">¿Estás seguro de que deseas eliminar al Jugador?</p>
-                                <div class="card border-0">
-                                    <div class="card-body">
-                                        <h6 class="card-title text-center">Datos del Jugador</h6>
-                                        <hr />
-                                        <p><strong>JugadorId:</strong> @JugadorAEliminar?.JugadorId</p>
-                                        <p><strong>Nombres:</strong> @JugadorAEliminar?.Nombres</p>
-                                        <p><strong>Partidas:</strong> @JugadorAEliminar?.Partidas</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="modal-footer justify-content-center">
-                                <button type="button" class="btn btn-danger" @onclick="Eliminar">Eliminar</button>
-                                <button type="button" class="btn btn-secondary" @onclick="CerrarModal">Volver</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
         </div>
         <div class="card-footer space-between">
             <label>Cantidad:  @ListaJugadores.Count()</label>
@@ -126,8 +89,6 @@
 
     public string Filtro { get; set; } = string.Empty;
     public string ValorFiltro { get; set; } = string.Empty;
-
-    private Jugadores? JugadorAEliminar;
 
     protected override async Task OnInitializedAsync()
     {
@@ -146,40 +107,21 @@
             {
                 ListaJugadores = await jugadoresService.Listar(j => j.Nombres.Contains(ValorFiltro));
             }
-            else if (Filtro == "Partidas" && int.TryParse(ValorFiltro, out var partidas)) 
+            else if (Filtro == "Victorias" && int.TryParse(ValorFiltro, out var victorias)) 
             {
-                ListaJugadores = await jugadoresService.Listar(j => j.Partidas == partidas);
+                ListaJugadores = await jugadoresService.Listar(j => j.Victorias == victorias);
+            } 
+            else if (Filtro == "Empates" && int.TryParse(ValorFiltro, out var empates))
+            {
+                ListaJugadores = await jugadoresService.Listar(j => j.Empates == empates);
+            }
+            else if (Filtro == "Derrotas" && int.TryParse(ValorFiltro, out var derrotas))
+            {
+                ListaJugadores = await jugadoresService.Listar(j => j.Derrotas == derrotas);
             }
         } else
         {
             ListaJugadores = await jugadoresService.Listar(j => j.JugadorId > 0);
         }
-    }
-
-    private async Task Eliminar()
-    {
-        var eliminar = await jugadoresService.Eliminar(JugadorAEliminar!.JugadorId);
-        if (eliminar)
-        {
-            ListaJugadores = await jugadoresService.Listar(j => j.JugadorId > 0);
-        }
-        CerrarModal();
-    }
-
-    private void MostrarConfirmacion(Jugadores jugador)
-    {
-        JugadorAEliminar = jugador;
-    }
-
-    private void CerrarModal()
-    {
-        JugadorAEliminar = null;
-    }
-
-    private async Task Restablecer()
-    {
-        ListaJugadores = await jugadoresService.Listar(j => j.JugadorId > 0);
-        Filtro = string.Empty;
-        ValorFiltro = string.Empty;
     }
 }

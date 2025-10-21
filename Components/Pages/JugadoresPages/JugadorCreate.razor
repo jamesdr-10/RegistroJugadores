@@ -10,8 +10,8 @@
 
     <div class="container">
         <div class="card shadow-lg">
-            <div class="card-header text-center">
-                <h5 class="card-title">Crear Jugador</h5>
+            <div class="card-header">
+                <h5 class="card-title text-center">Crear Jugador</h5>
             </div>
 
             <div class="card-body">
@@ -25,12 +25,6 @@
                     <label class="form-label"><strong>Nombres</strong></label>
                     <InputText class="form-control" @bind-Value="Jugador.Nombres"></InputText>
                     <ValidationMessage For="(() => Jugador.Nombres)" />
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label"><strong>Partidas</strong></label>
-                    <InputNumber class="form-control" @bind-Value="Jugador.Partidas"></InputNumber>
-                    <ValidationMessage For="(() => Jugador.Partidas)" />
                 </div>
             </div>
 
