@@ -5,6 +5,8 @@ VisualStudioVersion = 17.14.36414.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegistroJugadores", "RegistroJugadores\RegistroJugadores.csproj", "{8CF6038B-6C19-3317-2E81-1EBD5C6B8824}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegistroJugadores.BlazorWasm", "RegistroJugadores.BlazorWasm\RegistroJugadores.BlazorWasm.csproj", "{25F09B04-A020-416C-8A6F-8AD1257FBA1F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{8CF6038B-6C19-3317-2E81-1EBD5C6B8824}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8CF6038B-6C19-3317-2E81-1EBD5C6B8824}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8CF6038B-6C19-3317-2E81-1EBD5C6B8824}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25F09B04-A020-416C-8A6F-8AD1257FBA1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25F09B04-A020-416C-8A6F-8AD1257FBA1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25F09B04-A020-416C-8A6F-8AD1257FBA1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25F09B04-A020-416C-8A6F-8AD1257FBA1F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
