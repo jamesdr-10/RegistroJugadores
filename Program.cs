@@ -20,6 +20,8 @@ builder.Services.AddScoped<JugadoresService>();
 builder.Services.AddScoped<PartidasService>();
 builder.Services.AddScoped<MovimientosService>();
 
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://gestionhuacalesapi.azurewebsites.net/") });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
