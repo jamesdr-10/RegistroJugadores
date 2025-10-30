@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using RegistroJugadores;
+using RegistroJugadores.Components;
 using RegistroJugadores.DAL;
 using RegistroJugadores.Services;
-using RegistroJugadores.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,9 @@ builder.Services.AddDbContextFactory<Contexto>(o => o.UseSqlServer(ConnectionStr
 builder.Services.AddScoped<JugadoresService>();
 builder.Services.AddScoped<PartidasService>();
 builder.Services.AddScoped<MovimientosService>();
+
+builder.Services.AddScoped<IPartidasApiService, PartidasApiService>();
+builder.Services.AddScoped<IMovimientosApiService, MovimientosApiService>();
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://gestionhuacalesapi.azurewebsites.net/") });
 
